@@ -1,0 +1,21 @@
+name: "setup-vcpkg"
+author: "Thomas arcila <thomas.arcila@gmail.com>"
+description: "Bootstrap vcpkg for the current workflow"
+inputs:
+  config-file:
+    description: "A toml file holding the list of packages to install"
+    default: "setup-vcpkg.toml"
+  platform:
+    description: "The platform to select in the configuration file"
+outputs:
+  vcpkg:
+    description: "Path to vcpkg executable"
+  vcpkg-root:
+    description: "Root directory of vcpkg"
+  export:
+    description: "Path the exported set of files"
+  export-name:
+    description: "The name of the exported set of files"
+runs:
+  using: 'node12'
+  main: 'dist/index.js'

@@ -1,0 +1,37 @@
+name: Build and test
+on: [push]
+jobs:
+  run:
+    name: Build and test
+    strategy:
+      matrix:
+        os: [ubuntu, windows, macOS]
+
+    runs-on: ${{ matrix.os }}-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Setup vcpkg
+      uses: ./
+      id: vcpkg
+      with:
+        config-file: setup-vcpkg.toml
+        platform: ${{ matrix.os }}
+
+    - name: Export buildtree if failed
+      uses: actions/upload-artifact@v1
+      if: failure()
+      with:
+        name: build-tree-${{ matrix.os }}
+        path: ${{ steps.vcpkg.outputs.vcpkg-root }}/buildtrees
+
+    - name: Check vcpkg
+      run: ${{ steps.vcpkg.outputs.vcpkg }} list
+      shell: pwsh
+
+    - name: Export artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: ${{ steps.vcpkg.outputs.export-name }}
+        path: ${{ steps.vcpkg.outputs.export }}
