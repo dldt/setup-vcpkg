@@ -1,5 +1,10 @@
 name: Build and test
-on: [push]
+on:
+  pull_request:
+    types: [opened,edited]
+  push:
+    branches: "**"
+    tags: "**"
 jobs:
   run:
     name: Build and test
