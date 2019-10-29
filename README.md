@@ -1,6 +1,6 @@
 # setup-vcpkg
 
-![Github Action status](https://github.com/dldt/setup-vcpkg/workflows/Build%20and%20test/badge.svg)
+[![Github Action status](../../workflows/Build\%20and\%20test/badge.svg)](../../actions)
 
 This action bootstraps vcpkg and eventually builds a set defined packages for:
 
