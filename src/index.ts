@@ -84,9 +84,10 @@ async function run() {
             revision = await vcpkg.revision(platformConfig.directory);
         }
 
+        core.setOutput("vcpkg-root", platformConfig.directory);
+
         const vcpkgExe = await vcpkg.bootstrap(platformConfig.directory);
         core.setOutput("vcpkg", vcpkgExe);
-        core.setOutput("vcpkg-root", platformConfig.directory);
 
         if (platformConfig.packages.length) {
             await vcpkg.install(vcpkgExe, platformConfig.directory, platformConfig.triplet, platformConfig.packages);
