@@ -82,9 +82,9 @@ function run() {
             else {
                 revision = yield vcpkg.revision(platformConfig.directory);
             }
+            core.setOutput("vcpkg-root", platformConfig.directory);
             const vcpkgExe = yield vcpkg.bootstrap(platformConfig.directory);
             core.setOutput("vcpkg", vcpkgExe);
-            core.setOutput("vcpkg-root", platformConfig.directory);
             if (platformConfig.packages.length) {
                 yield vcpkg.install(vcpkgExe, platformConfig.directory, platformConfig.triplet, platformConfig.packages);
             }

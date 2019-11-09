@@ -29,7 +29,7 @@ jobs:
       if: failure()
       with:
         name: build-tree-${{ matrix.os }}
-        path: ${{ steps.vcpkg.outputs.vcpkg-root }}/buildtrees
+        path: ${{ steps.vcpkg.outputs.vcpkg-root }}
 
     - name: Check vcpkg
       run: ${{ steps.vcpkg.outputs.vcpkg }} list

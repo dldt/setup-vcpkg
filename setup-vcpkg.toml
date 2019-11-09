@@ -1,4 +1,4 @@
 repository = "https://github.com/Microsoft/vcpkg.git"
-revision = "2019.09"
+revision = "2019.10"
 packages = [ "ms-gsl", "glm" ]
 export = "artifacts-<platform>-<revision>"
