@@ -22,14 +22,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const platform_1 = require("./platform");
 const core = __importStar(require("@actions/core"));
 const exec = __importStar(require("@actions/exec"));
-const io = __importStar(require("@actions/io"));
 const promise_1 = __importDefault(require("simple-git/promise"));
 const fs = __importStar(require("fs"));
 const os = __importStar(require("os"));
 const path = __importStar(require("path"));
 const util = __importStar(require("util"));
-const mkdir = util.promisify(fs.mkdir);
 const exists = util.promisify(fs.exists);
+const mkdir = util.promisify(fs.mkdir);
+const readFile = util.promisify(fs.readFile);
+const writeFile = util.promisify(fs.writeFile);
 exports.clone = (repository, revision, directory) => __awaiter(void 0, void 0, void 0, function* () {
     let git;
     if (yield exists(directory)) {
@@ -52,40 +53,21 @@ exports.revision = (directory) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.bootstrap = (directory) => __awaiter(void 0, void 0, void 0, function* () {
     const platformInfo = platform_1.platformsInfo[os.platform()];
-    // On MacOS install gcc@8 through homebrew. This is
-    // necessary as vcpkg does not support building with
-    // Apple Clang for now.
-    let uninstallMacOSGcc = false;
-    let bootstrapOpt = {};
+    let bootstrapFlags = [];
+    let bootstrapOpts = {};
     if (os.platform() === "darwin") {
-        // Try to find gcc and install it if not already there.
-        const gccPath = yield io.which("gcc-8");
-        if (!gccPath) {
-            uninstallMacOSGcc = true;
-            core.info("Installing gcc8");
-            yield exec.exec("brew install gcc@8");
-        }
-        // Build up a set of options to generate vcpkg
-        // using a static gcc/g++ runtime so it does
-        // not explicitly depend on the version of
-        // gcc we used to build it.
-        bootstrapOpt = {
-            env: Object.assign({}, process.env, {
-                CC: "gcc-8",
-                CXX: "g++-8",
-                CFLAGS: "-static-libgcc",
-                CXXFLAGS: "-static-libstdc++ -static-libgcc",
-            }),
-        };
+        bootstrapFlags = ["--allowAppleClang"];
+        bootstrapOpts = { env: { MACOSX_DEPLOYMENT_TARGET: "10.15" } };
+        // Edit bootstrap script as its invocation of clang++ is broken wrt to
+        // deployment target selection
+        const bootstrapScriptContent = (yield readFile("vcpkg/scripts/bootstrap.sh")).toString();
+        yield writeFile("vcpkg/scripts/bootstrap.sh", bootstrapScriptContent.replace("CXX=clang++", "unset CXX"));
     }
     // Bootstrap vcpkg, possibly using MacOS customized env and
     // expose it to later actions.
     const bootstrapScript = path.resolve(directory, platformInfo.bootstrap);
-    yield exec.exec(bootstrapScript, [], bootstrapOpt);
-    // MacOS cleanup
-    if (uninstallMacOSGcc) {
-        yield exec.exec("brew uninstall gcc@8");
-    }
+    core.info("" + ([bootstrapScript, bootstrapFlags, bootstrapOpts]));
+    yield exec.exec(bootstrapScript, bootstrapFlags, bootstrapOpts);
     return path.resolve(directory, platformInfo.vcpkg);
 });
 exports.install = (vcpkg, directory, triplet, packages) => __awaiter(void 0, void 0, void 0, function* () {
