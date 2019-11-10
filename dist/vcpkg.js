@@ -67,7 +67,6 @@ exports.bootstrap = (directory) => __awaiter(void 0, void 0, void 0, function* (
     // Bootstrap vcpkg, possibly using MacOS customized env and
     // expose it to later actions.
     const bootstrapScript = path.resolve(directory, platformInfo.bootstrap);
-    core.info("" + ([bootstrapScript, bootstrapFlags, bootstrapOpts]));
     yield exec.exec(bootstrapScript, bootstrapFlags, bootstrapOpts);
     return path.resolve(directory, platformInfo.vcpkg);
 });

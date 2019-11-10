@@ -59,7 +59,6 @@ export const bootstrap = async (directory: string) => {
     // Bootstrap vcpkg, possibly using MacOS customized env and
     // expose it to later actions.
     const bootstrapScript = path.resolve(directory, platformInfo.bootstrap);
-    core.info("" + ([bootstrapScript, bootstrapFlags, bootstrapOpts]));
     await exec.exec(bootstrapScript, bootstrapFlags, bootstrapOpts);
 
     return path.resolve(directory, platformInfo.vcpkg);
