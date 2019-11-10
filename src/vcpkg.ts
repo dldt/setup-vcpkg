@@ -6,6 +6,8 @@ import * as io from "@actions/io";
 
 import simpleGit from "simple-git/promise";
 
+import rmfr from "rmfr";
+
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
@@ -64,14 +66,18 @@ export const bootstrap = async (directory: string) => {
 };
 
 export const install = async (vcpkg: string, directory: string, triplet: string, packages: string[]) => {
-    core.info("Installing packages " + packages + " for triplet " + triplet);
-    await exec.exec(vcpkg,
-        Array.prototype.concat([
-            "install",
-            "--triplet",
-            triplet,
-        ], packages),
-    );
+    for (const pkg of packages) {
+        core.info("Installing packages " + pkg + " for triplet " + triplet);
+        await exec.exec(vcpkg,
+            [
+                "install",
+                "--triplet",
+                triplet,
+                pkg,
+            ],
+        );
+        await rmfr(directory + "/buildtrees");
+    }
 };
 
 export const export_ = async (vcpkg: string, vcpkgDirectory: string,
