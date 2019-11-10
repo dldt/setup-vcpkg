@@ -9,6 +9,7 @@
   "devDependencies": {
     "@types/check-types": "^7.3.1",
     "@types/node": "^12.11.1",
+    "@types/rmfr": "^2.0.0",
     "tslint": "^5.20.0",
     "typescript": "^3.6.4"
   },
@@ -17,11 +18,12 @@
     "@actions/exec": "^1.0.1",
     "@actions/io": "^1.0.1",
     "check-types": "^10.1.1",
+    "rmfr": "^2.0.0",
     "simple-git": "^1.126.0",
     "toml": "^3.0.0"
   },
   "scripts": {
     "build": "tsc",
-    "watch" : "tsc -w"
+    "watch": "tsc -w"
   }
 }
