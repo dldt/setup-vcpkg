@@ -23,7 +23,6 @@ const platform_1 = require("./platform");
 const core = __importStar(require("@actions/core"));
 const exec = __importStar(require("@actions/exec"));
 const promise_1 = __importDefault(require("simple-git/promise"));
-const rmfr_1 = __importDefault(require("rmfr"));
 const fs = __importStar(require("fs"));
 const os = __importStar(require("os"));
 const path = __importStar(require("path"));
@@ -79,7 +78,6 @@ exports.install = (vcpkg, directory, triplet, packages) => __awaiter(void 0, voi
             triplet,
             pkg,
         ]);
-        yield rmfr_1.default(directory + "/buildtrees");
     }
 });
 exports.export_ = (vcpkg, vcpkgDirectory, exportTo, triplet, packages) => __awaiter(void 0, void 0, void 0, function* () {

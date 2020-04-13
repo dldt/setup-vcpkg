@@ -6,12 +6,12 @@ import * as io from "@actions/io";
 
 import simpleGit from "simple-git/promise";
 
-import rmfr from "rmfr";
-
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
 import * as util from "util";
+
+import * as process from "process";
 
 const exists = util.promisify(fs.exists);
 const mkdir = util.promisify(fs.mkdir);
@@ -73,9 +73,8 @@ export const install = async (vcpkg: string, directory: string, triplet: string,
                 "--triplet",
                 triplet,
                 pkg,
-            ],
+            ]
         );
-        await rmfr(directory + "/buildtrees");
     }
 };
 
